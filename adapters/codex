@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Run the distribution's conductor from the target checkout.
+set -euo pipefail
+: "${PR_GRAPH_HOME:?Set PR_GRAPH_HOME to the trusted PR Graph checkout}"
+: "${PR_GRAPH_TARGET:?Set PR_GRAPH_TARGET to the target repository checkout}"
+: "${GITHUB_REPOSITORY:?Set GITHUB_REPOSITORY to OWNER/REPO}"
+cd "$PR_GRAPH_TARGET"
+request="Run the PR graph for $GITHUB_REPOSITORY. Read the conductor at $PR_GRAPH_HOME/.claude/skills/pr-graph/SKILL.md. Load reviewer, fixer, schemas and merge gate from that trusted distribution. Run all Git and PR operations against the target checkout. Use fresh review agents. Return the summary and scorecard."
+printf '%s\n' "$request" | codex exec --cd "$PR_GRAPH_TARGET" -

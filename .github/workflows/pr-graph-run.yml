@@ -1,0 +1,62 @@
+name: Run the PR graph
+on:
+  workflow_call:
+    inputs:
+      graph_revision:
+        description: Full trusted commit SHA from arm-pz/pr-graph
+        required: true
+        type: string
+    secrets:
+      graph_token:
+        description: Caller-scoped GitHub App installation token for PR updates
+        required: true
+jobs:
+  graph:
+    # Install and authenticate the agent on an isolated, ephemeral runner with this label.
+    runs-on: [self-hosted, pr-graph]
+    permissions:
+      contents: read
+    concurrency:
+      group: pr-graph-agent-${{ github.repository }}
+      cancel-in-progress: false
+    steps:
+      - name: Require a trusted default-branch caller
+        env:
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        shell: bash
+        run: |
+          [[ "$REF" == "refs/heads/$DEFAULT_BRANCH" ]]
+          [[ "$EVENT" == workflow_dispatch || "$EVENT" == schedule ]]
+      - name: Validate distribution revision
+        shell: bash
+        env:
+          GRAPH_REVISION: ${{ inputs.graph_revision }}
+        run: '[[ "$GRAPH_REVISION" =~ ^[0-9a-fA-F]{40}$ ]]'
+      - name: Load the shared PR Graph release
+        uses: actions/checkout@v4
+        with:
+          repository: arm-pz/pr-graph
+          ref: ${{ inputs.graph_revision }}
+          path: distribution
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          path: target
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Run the installed conductor and publish its scorecard
+        env:
+          GH_TOKEN: ${{ secrets.graph_token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd target
+          export PR_GRAPH_HOME="$GITHUB_WORKSPACE/distribution"
+          export PR_GRAPH_TARGET="$PWD"
+          adapter="${PR_GRAPH_AGENT:-pr-graph-agent}"
+          case "$adapter" in
+            codex|claude) adapter="$PR_GRAPH_HOME/adapters/$adapter" ;;
+          esac
+          "$adapter" | tee -a "$GITHUB_STEP_SUMMARY"
