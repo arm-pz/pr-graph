@@ -1,6 +1,17 @@
 # PR Graph
 
-PR Graph reviews GitHub pull requests, fixes blocking findings on their own branches, asks a fresh reviewer to verify each fix, and squash-merges eligible changes. A Python gate makes the final decision. Each review is bound to the repository, PR number, base and head commits.
+Review GitHub pull requests, fix blocking findings on their own branches, and ask a fresh reviewer to verify each change. A Python gate checks the exact commits, CI, labels and protected paths before it can squash-merge. Maintainers can run the full workflow or reuse just the gate.
+
+Clone the trusted distribution and install the workflow files into a target checkout:
+
+```sh
+git clone https://github.com/arm-pz/pr-graph.git
+python pr-graph/tools/pr-graph/install.py /path/to/target
+```
+
+The full loop needs an authenticated, configured agent runner. Codex and Claude launchers are included. The [setup guide](https://github.com/arm-pz/pr-graph/blob/main/tools/pr-graph/README.md) covers credentials, CI names and permissions.
+
+Try “Review and fix the open PRs”, “Show which PRs are held and why”, or “Verify the fixes and give me the scorecard”. The [reviewer skill](https://github.com/arm-pz/consistent-code-review) produces the findings; PR Graph coordinates fixes, re-review and merging. The unrelated research repository with the same name studies graph-based posterior regularization.
 
 ## Run in another repository
 
