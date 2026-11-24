@@ -1,6 +1,7 @@
 ---
 name: address-findings
-description: Fixes the CRITICAL and HIGH findings in a consistent-code-review report for one pull request, staying inside the files that PR already changes, then reports each finding as fixed, won't fix (with evidence) or escalate. Use when a review-report.json exists for a PR and its blocking findings need addressing, or when the pr-graph conductor calls the fixer node. Not for writing a review (use consistent-code-review), adding features, rebasing for conflicts, or merging (merge_gate.py decides that).
+description: Fixes the CRITICAL and HIGH findings in a consistent-code-review report for one pull request, staying inside the files that PR already changes, then reports each finding as fixed, won't fix (with evidence) or escalate. Use whenever someone asks to address, fix or resolve the review findings, blocking comments or CRITICAL/HIGH issues on a PR and a review-report.json exists for it, even if they never say "findings", or when the pr-graph conductor calls the fixer node. Not for writing a review (use consistent-code-review), adding features, rebasing for conflicts, or merging (merge_gate.py decides that).
+version: 0.2.0
 ---
 
 # address-findings
@@ -16,6 +17,8 @@ Fix what the review found, nothing more. An honest "won't fix" or "escalate" is 
 - At most one commit per finding, so each fix can be reverted on its own.
 
 ## Inputs
+
+Get `{owner}/{repo}` from `gh repo view --json nameWithOwner --jq .nameWithOwner` unless the conductor passes it. The schema paths below are the PR graph layout. If a schema file is missing, say so and ask for it. Don't invent the report shape.
 
 - `review-report.json` for this PR, valid against `tools/pr-graph/schemas/review-report.schema.json`.
 - The round number from the conductor (1 to 3).

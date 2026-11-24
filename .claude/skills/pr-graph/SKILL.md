@@ -1,6 +1,7 @@
 ---
 name: pr-graph
-description: Conductor for the repository’s pull request graph. For each open PR it runs a review node (consistent-code-review in a fresh subagent), a fixer node (address-findings) on any CRITICAL or HIGH finding, and a fresh re-review, for at most 3 rounds. Then it hands the PR to merge_gate.py, which squash-merges or holds it as code. Use when asked to "review and merge the open PRs", to run the PR graph, or when the nightly task processes open PRs in this repo. Not for reviewing one diff by hand (use consistent-code-review), fixing findings outside a run (use address-findings).
+description: Conductor for the repository’s pull request graph. For each open PR it runs a review node (consistent-code-review in a fresh subagent), a fixer node (address-findings) on any CRITICAL or HIGH finding, and a fresh re-review, for at most 3 rounds. Then it hands the PR to merge_gate.py, which squash-merges or holds it as code. Use when asked to "review and merge the open PRs", to run the PR graph, to show which PRs are held and why, to verify the fixes and give the scorecard, or when the nightly task processes open PRs in this repo. Not for reviewing one diff by hand (use consistent-code-review), fixing findings outside a run (use address-findings).
+version: 0.1.0
 ---
 
 # pr-graph

@@ -1,3 +1,3 @@
 # Source
 
-This repo-local variant of [arm-pz/address-findings](https://github.com/arm-pz/address-findings) adds the PR graph’s repository-bound handoff, target-specific baseline and label rules. Review these adaptations when syncing upstream.
+Vendored copy of [arm-pz/address-findings](https://github.com/arm-pz/address-findings) 0.2.0 (`1f6ce5b`), which is the source of truth. Change the skill there, then copy `SKILL.md` here. Don't edit this copy directly.
